@@ -1,75 +1,8 @@
 # Load packages
 library(ggplot2)
 library(dplyr)
-# Load data, fit linear models, and predict specific growth rate
-data2<- read.csv("dv_predmetabolicrates.csv") # For Dolly Varden or "chin_predmetabolicrates.csv" for Chinook salmon
-fit_predsgr <- lm(pred_growth ~ poly(temp, 3, raw = TRUE), data = data2)
-predicted_sgr <- predict(fit_predsgr, newdata = data2)
-residuals_sgr <- data2$pred_growth - predicted_sgr
-standard_dev_predsgr <- sd(residuals_predsgr)
-upper_bound_predsgr <- predicted_sgr + standard_dev_predsgr
-lower_bound_predsgr <- predicted_sgr - standard_dev_predsgr
-data2$predicted_sgr <- predicted_sgr
-data2$upper_sgr <- upper_bound_predsgr
-data2$lower_predsgr <- lower_bound_scalesgr
-# Fit linear model and predict consumption rate
-fit_predcons <- lm(pred_cons ~ poly(temp, 3, raw = TRUE), data = data2)
-predicted_scalecons <- predict(fit_scalecons, newdata = data2)
-residuals_scalecons <- data2$scale_cons - predicted_scalecons
-standard_dev_scalecons <- sd(residuals_scalecons)
-upper_bound_scalecons <- predicted_scalecons + standard_dev_scalecons
-lower_bound_scalecons <- predicted_scalecons - standard_dev_scalecons
-data2$predicted_scalecons <- predicted_scalecons
-data2$upper_scalecons <- upper_bound_scalecons
-data2$lower_scalecons <- lower_bound_scalecons
-# Fit linear model and predict respiration rate
-fit_predresp <- lm(pred_resp ~ poly(temp, 3, raw = TRUE), data = data2)
-summmpredicted_scaleresp <- predict(fit_scaleresp, newdata = data2)
-residuals_scaleresp <- data2$scale_resp - predicted_scaleresp
-standard_dev_scaleresp <- sd(residuals_scaleresp)
-upper_bound_scaleresp <- predicted_scaleresp + standard_dev_scaleresp
-lower_bound_scaleresp <- predicted_scaleresp - standard_dev_scaleresp
-data2$predicted_scaleresp <- predicted_scaleresp
-data2$upper_scaleresp <- upper_bound_scaleresp
-data2$lower_scaleresp <- lower_bound_scaleresp
-
-# Plotting with fit shading for three different metabolic rates
-ggplot(data2, aes(x = temp)) +
-  # MetabolicRate1 with shading
-  geom_line(aes(y = MeansgrRate), color = 'red', linewidth = 1) +
-  geom_ribbon(aes(ymin = lower_scalesgr, ymax = upper_scalesgr), fill = 'grey', alpha = 0.2) +
-  
-  # MetabolicRate2 with shading
-  geom_line(aes(y = predicted_scalecons), color = 'black', linewidth = 1, linetype = "dashed") +
-  geom_ribbon(aes(ymin = lower_scalecons, ymax = upper_scalecons), fill = 'darkgrey', alpha = 0.2) +
-  
-  # MetabolicRate3 with shading
-  geom_line(aes(y = predicted_scaleresp), color = 'black', linewidth = 1, linetype = "dotted") +
-  geom_ribbon(aes(ymin = lower_scaleresp, ymax = upper_scaleresp), fill = 'darkgrey', alpha = 0.2) +
-  
-  # Add labels and theme
-  labs(
-       x = 'Temperature (°C)',
-       y = 'Metabolic Rates') +
-theme_minimal() +
-  theme(
-    panel.grid.major = element_blank(),  # Remove major gridlines
-    panel.grid.minor = element_blank(),  # Remove minor gridlines
-    axis.line = element_line(linewidth = 1)  # Thicken axis lines
-  )+
-# Change y-axis scale
-scale_y_continuous(
-  limits = c(-.2, 1.2),  # Set the limits of the y-axis (e.g., from 0 to 100)
-  breaks = seq(-0.2, 1.2, by = 0.1),  # Set the breaks (intervals) on the y-axis
-  labels = scales::label_number()  # Format labels if needed
-)+
-#Change x-axis scale
-scale_x_continuous(
-  limits = c(7, 14.5),  # Set the limits of the y-axis (e.g., from 0 to 100)
-  breaks = seq(7, 14.5, by = 1),  # Set the breaks (intervals) on the y-axis
-  labels = scales::label_number()  # Format labels if needed
-)
-
+# Load data
+data2 <-read.csv("dv_predmetabolicrates.csv") # For Dolly Varden or "chin_predmetabolicrates.csv" for Chinook salmon
 # Calculate standard deviation for each temperature group
 dv_sdsgr <- data2 %>%
   group_by(temp) %>%
@@ -113,8 +46,8 @@ ggplot(data_newdv, aes(x = temp)) +
   )+
   # Change y-axis scale
   scale_y_continuous(
-    limits = c(25, 500),  # Set the limits of the y-axis (e.g., from 0 to 100)
-    breaks = seq(25, 500, by = 50),  # Set the breaks (intervals) on the y-axis
+    limits = c(-50, 800),  # Set the limits of the y-axis (for Chinook salmon change from -50 and 800 to 0 and 500)
+    breaks = seq(-50, 800, by = 50),  # Set the breaks (intervals) on the y-axis (for Chinook salmon change to 0 and 500, by 50)
     labels = scales::label_number()  # Format labels if needed
   )+
   #Change x-axis scale
