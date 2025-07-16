@@ -9,6 +9,7 @@ message: >-
 type: dataset
 authors:
   - given-names: Peyton
+    name-particle: A
     family-names: Thomas
     email: peyton.thomas@colorado.edu
     affiliation: University of Colorado Boulder
